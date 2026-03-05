@@ -63,6 +63,6 @@ public class ProdutoPerecivel extends Produto {
 
        
 
-        return String.format("2;%s;%s;%s", super.descricao, precoFormatado, margemFormatada, dataFormatada);
+        return String.format("2;%s;%s;%s;%s", super.descricao, precoFormatado, margemFormatada, dataFormatada);
     }
 }

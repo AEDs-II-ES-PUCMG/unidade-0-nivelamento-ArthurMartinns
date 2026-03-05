@@ -1,6 +1,10 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class App {
@@ -127,7 +131,48 @@ public class App {
      * Uma sugestão de melhoria mais significativa poderia ser o uso de padrão Factory Method para criação dos objetos.
      */
     static void cadastrarProduto(){
-        //TO DO
+        cabecalho();
+        System.out.println("CADASTRO DE NOVO PRODUTO");
+        System.out.println("========================");
+        
+        System.out.print("Tipo do produto (1 - Não perecível, 2 - Perecível): ");
+        int tipo = Integer.parseInt(teclado.nextLine());
+        
+        System.out.print("Descrição: ");
+        String descricao = teclado.nextLine();
+        
+        System.out.print("Preço de custo: ");
+        double precoCusto = Double.parseDouble(teclado.nextLine());
+        
+        System.out.print("Margem de lucro (ex: 0.20 para 20%): ");
+        double margemLucro = Double.parseDouble(teclado.nextLine());
+        
+        Produto novoProduto = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        try {
+            if (tipo == 1) {
+                novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+            } else if (tipo == 2) {
+                System.out.print("Data de validade (dd/MM/yyyy): ");
+                String data = teclado.nextLine();
+                LocalDate dataValidade = LocalDate.parse(data, formatter);
+                novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataValidade);
+            } else {
+                System.out.println("Tipo inválido!");
+                return;
+            }
+            
+            if (quantosProdutos < produtosCadastrados.length) {
+                produtosCadastrados[quantosProdutos] = novoProduto;
+                quantosProdutos++;
+                System.out.println("Produto cadastrado com sucesso!");
+            } else {
+                System.out.println("Limite de produtos atingido!");
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao cadastrar produto: " + e.getMessage());
+        }
     }
 
     /**
@@ -135,7 +180,17 @@ public class App {
      * @param nomeArquivo Nome do arquivo a ser gravado.
      */
     public static void salvarProdutos(String nomeArquivo){
-        //TO DO  
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nomeArquivo, Charset.forName("UTF-8")))) {
+            writer.println(quantosProdutos);
+            for (int i = 0; i < quantosProdutos; i++) {
+                if (produtosCadastrados[i] != null) {
+                    writer.println(produtosCadastrados[i].gerarDadosTexto());
+                }
+            }
+            System.out.println("Produtos salvos com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar produtos: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws Exception {
