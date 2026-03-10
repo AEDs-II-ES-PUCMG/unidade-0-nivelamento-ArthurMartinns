@@ -28,6 +28,10 @@ public abstract class Produto {
 		}
 	}
 
+	public double getPreco() {
+		return precoCusto;
+	}
+
 	/**
 	 * Construtor completo. Os valores default, em caso de erro, são:
 	 * "Produto sem descrição", R$ 0.00, 0.0
